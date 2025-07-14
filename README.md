@@ -1,5 +1,3 @@
-# content-cluster-visualization-add-on
-
 # LLM Content Cluster Visualization Add-On
 Visualize website content as 3D topic clusters for SEO optimization.
 
