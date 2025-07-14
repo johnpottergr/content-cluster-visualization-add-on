@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "interval": "week"
+      }
+    },
+    {
+      "name": "Run Visualization",
+      "type": "n8n-nodes-base.executeCommand",
+      "parameters": {
+        "command": "python visualization.py --input urls.csv"
+      }
+    },
+    {
+      "name": "Push to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "parameters": {
+        "operation": "append",
+        "sheetId": "{{ $env.GOOGLE_SHEET_ID }}",
+        "range": "ContentVisualization!A:I",
+        "values": [
+          "{{ $node['Run Visualization'].json.url }}",
+          "{{ $node['Run Visualization'].json.cluster }}",
+          "{{ $node['Run Visualization'].json.cluster_topic }}",
+          "{{ $node['Run Visualization'].json.authority_score }}",
+          "{{ $node['Run Visualization'].json.off_topic }}",
+          "{{ $node['Run Visualization'].json.is_duplicate }}"
+        ]
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": { "main": [["Run Visualization"]] },
+    "Run Visualization": { "main": [["Push to Google Sheets"]] }
+  }
+}
